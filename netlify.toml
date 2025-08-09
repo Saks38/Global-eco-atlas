@@ -1,0 +1,47 @@
+[build]
+  publish = "dist/public"
+  command = "npm run build:frontend"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+# Handle client-side routing for React SPA
+# This ensures that direct navigation to routes like /calculator, /dashboard, etc.
+# will serve the index.html file instead of returning 404
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+  force = false
+
+# Optional: If you need API routes handled by serverless functions
+# Uncomment the following section if you plan to use Netlify Functions
+# [[redirects]]
+#   from = "/api/*"
+#   to = "/.netlify/functions/api/:splat"
+#   status = 200
+
+# Security headers
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+# Cache static assets
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "*.js"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "*.css"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
